@@ -1,0 +1,75 @@
+buildscript {
+    ext {
+        springBootVersion = '3.0.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+allprojects {
+    group 'dev.jsoo.spring-example'
+    version '0.0.1-SNAPSHOT'
+
+    apply plugin: 'java'
+    apply plugin: 'groovy'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 17
+    targetCompatibility = 17
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+
+}
+
+subprojects {
+
+}
+
+project(':spring-example-domain') {
+    dependencies {
+    }
+
+    bootJar {
+        enabled = false
+    }
+
+    jar {
+        enabled = true
+    }
+}
+
+project(':spring-example-web') {
+    dependencies {
+        implementation project(':spring-example-domain')
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    }
+
+    jar {
+        enabled = false
+    }
+}
+
+project(':spring-example-batch') {
+    dependencies {
+        implementation project(':spring-example-domain')
+        implementation 'org.springframework.boot:spring-boot-starter-batch'
+    }
+}
